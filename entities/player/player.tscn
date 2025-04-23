@@ -1,0 +1,62 @@
+[gd_scene load_steps=10 format=3 uid="uid://dbdulgr6xkhro"]
+
+[ext_resource type="Script" uid="uid://c2fdnuiv80stl" path="res://scripts/player/player.gd" id="1_fkugw"]
+[ext_resource type="Script" uid="uid://buq3uk84lw7x5" path="res://scripts/state_machine.gd" id="1_symyc"]
+[ext_resource type="Script" uid="uid://bbaj4mqecchro" path="res://scripts/player/states/run.gd" id="3_fkugw"]
+[ext_resource type="Script" uid="uid://dcivc0vysjl3t" path="res://scripts/player/camera.gd" id="3_qiwj3"]
+[ext_resource type="Script" uid="uid://ckdd603yqbiqb" path="res://scripts/player/states/idle.gd" id="4_8fjmc"]
+[ext_resource type="Script" uid="uid://cl5hw5r7hdb66" path="res://scripts/player/states/air.gd" id="5_qiwj3"]
+[ext_resource type="Script" uid="uid://cg8x1hptcto54" path="res://scripts/player/stats.gd" id="7_qiwj3"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sfv1e"]
+radius = 0.33
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_sfv1e"]
+radius = 0.3
+height = 1.75
+
+[node name="player" type="CharacterBody3D" node_paths=PackedStringArray("stats", "state_machine")]
+script = ExtResource("1_fkugw")
+stats = NodePath("stats")
+state_machine = NodePath("state_machine")
+
+[node name="head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 7, 5)
+
+[node name="eyes" type="Node3D" parent="head"]
+
+[node name="eye" type="Camera3D" parent="head/eyes" node_paths=PackedStringArray("player", "head", "eyes")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.325317)
+projection = 1
+current = true
+fov = 90.0
+size = 4.0
+script = ExtResource("3_qiwj3")
+player = NodePath("../../..")
+head = NodePath("../..")
+eyes = NodePath("..")
+
+[node name="body" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_sfv1e")
+
+[node name="skin" type="MeshInstance3D" parent="body"]
+mesh = SubResource("CapsuleMesh_sfv1e")
+skeleton = NodePath("../..")
+
+[node name="state_machine" type="Node" parent="."]
+script = ExtResource("1_symyc")
+initial_state = NodePath("idle")
+
+[node name="idle" type="Node" parent="state_machine"]
+script = ExtResource("4_8fjmc")
+
+[node name="run" type="Node" parent="state_machine"]
+script = ExtResource("3_fkugw")
+
+[node name="air" type="Node" parent="state_machine"]
+script = ExtResource("5_qiwj3")
+
+[node name="stats" type="Node" parent="."]
+script = ExtResource("7_qiwj3")

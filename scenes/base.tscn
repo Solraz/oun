@@ -1,0 +1,62 @@
+[gd_scene load_steps=11 format=3 uid="uid://cw4im6fy17sy7"]
+
+[ext_resource type="PackedScene" uid="uid://dbdulgr6xkhro" path="res://entities/player/player.tscn" id="1_pvqg0"]
+
+[sub_resource type="Environment" id="Environment_pvqg0"]
+
+[sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_baglu"]
+
+[sub_resource type="Compositor" id="Compositor_t45w4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pvqg0"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_pvqg0"]
+material = SubResource("StandardMaterial3D_pvqg0")
+size = Vector2(100, 100)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_pvqg0"]
+points = PackedVector3Array(-50.7837, -50.7837, -0.793495, 50.7837, 50.7837, 0.793495, 50.7837, 50.7837, -0.793495, -50.7837, 50.7837, 0.793495, 50.7837, -50.7837, 0.793495, 50.7837, -50.7837, -0.793495, -50.7837, 50.7837, -0.793495, -50.7837, -50.7837, 0.793495)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_pvqg0"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_pvqg0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pvqg0"]
+
+[node name="base" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_pvqg0")
+camera_attributes = SubResource("CameraAttributesPractical_baglu")
+compositor = SubResource("Compositor_t45w4")
+
+[node name="player" parent="." instance=ExtResource("1_pvqg0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.47095, 0)
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.8848, 0)
+omni_range = 4096.0
+
+[node name="floor" type="StaticBody3D" parent="."]
+
+[node name="floor_mesh" type="MeshInstance3D" parent="floor"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_pvqg0")
+skeleton = NodePath("../..")
+
+[node name="floor_collision" type="CollisionShape3D" parent="floor"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_pvqg0")
+
+[node name="objects" type="Node3D" parent="."]
+
+[node name="RigidBody3D" type="RigidBody3D" parent="objects"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.46619, -10.2501)
+physics_material_override = SubResource("PhysicsMaterial_pvqg0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="objects/RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8.78917)
+mesh = SubResource("BoxMesh_pvqg0")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="objects/RigidBody3D"]
+shape = SubResource("BoxShape3D_pvqg0")
