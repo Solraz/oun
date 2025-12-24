@@ -4,15 +4,17 @@ class_name StateMachine
 signal transitioned
 
 @export var initial_state := NodePath()
+@export var entity: Entity
 @onready var state: State = get_node(initial_state)
 
 func _ready() -> void:
 	await owner.ready
 
 	for child in get_children():
-		child.state_machine = self
-
+		child.machine = self
+	
 	state.enter()
+
 
 func _unhandled_input(event: InputEvent) -> void:
 	state.handle_input(event)
@@ -31,6 +33,8 @@ func transition_to(target_state_name: String, msg: Dictionary = {}) -> void:
 		return
 
 	state.exit()
+
 	state = get_node(target_state_name)
 	state.enter(msg)
+	
 	emit_signal("transitioned", state.name)

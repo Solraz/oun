@@ -1,34 +1,43 @@
-[gd_scene load_steps=10 format=3 uid="uid://dbdulgr6xkhro"]
+[gd_scene format=3 uid="uid://dbdulgr6xkhro"]
 
 [ext_resource type="Script" uid="uid://c2fdnuiv80stl" path="res://scripts/player/player.gd" id="1_fkugw"]
 [ext_resource type="Script" uid="uid://buq3uk84lw7x5" path="res://scripts/state_machine.gd" id="1_symyc"]
 [ext_resource type="Script" uid="uid://bbaj4mqecchro" path="res://scripts/player/states/run.gd" id="3_fkugw"]
 [ext_resource type="Script" uid="uid://dcivc0vysjl3t" path="res://scripts/player/camera.gd" id="3_qiwj3"]
+[ext_resource type="Script" uid="uid://mrjprdpdli3y" path="res://scripts/player/qol/slope_checker.gd" id="3_wvtmh"]
 [ext_resource type="Script" uid="uid://ckdd603yqbiqb" path="res://scripts/player/states/idle.gd" id="4_8fjmc"]
+[ext_resource type="Script" uid="uid://cyyx8djkx36d2" path="res://scripts/player/qol/ceiling_checker.gd" id="4_a1qjk"]
+[ext_resource type="Script" uid="uid://cyh6usj8jd8lq" path="res://scripts/systems/entity_movement.gd" id="4_bectd"]
+[ext_resource type="Script" uid="uid://dvcka8uvwnn3k" path="res://scripts/player/qol/ground_checker.gd" id="5_j3ovn"]
 [ext_resource type="Script" uid="uid://cl5hw5r7hdb66" path="res://scripts/player/states/air.gd" id="5_qiwj3"]
 [ext_resource type="Script" uid="uid://cg8x1hptcto54" path="res://scripts/player/stats.gd" id="7_qiwj3"]
+[ext_resource type="Script" uid="uid://dijpjtwg47hbf" path="res://scripts/player/debug/debug_hud.gd" id="9_a1qjk"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sfv1e"]
-radius = 0.33
-height = 1.8
+radius = 0.25
+height = 1.5
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_sfv1e"]
+lightmap_size_hint = Vector2i(11, 12)
 radius = 0.3
 height = 1.75
 
-[node name="player" type="CharacterBody3D" node_paths=PackedStringArray("stats", "state_machine")]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3wlsy"]
+
+[node name="player" type="CharacterBody3D" unique_id=1707101686 node_paths=PackedStringArray("stats", "state_machine")]
+floor_stop_on_slope = false
 script = ExtResource("1_fkugw")
 stats = NodePath("stats")
 state_machine = NodePath("state_machine")
 
-[node name="head" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 7, 5)
+[node name="head" type="Node3D" parent="." unique_id=1820260581]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
 
-[node name="eyes" type="Node3D" parent="head"]
+[node name="eyes" type="Node3D" parent="head" unique_id=1500523]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
 
-[node name="eye" type="Camera3D" parent="head/eyes" node_paths=PackedStringArray("player", "head", "eyes")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.325317)
-projection = 1
+[node name="eye" type="Camera3D" parent="head/eyes" unique_id=1828620688 node_paths=PackedStringArray("player", "head", "eyes")]
+visibility_parent = NodePath("../../../body/skin")
 current = true
 fov = 90.0
 size = 4.0
@@ -37,26 +46,430 @@ player = NodePath("../../..")
 head = NodePath("../..")
 eyes = NodePath("..")
 
-[node name="body" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+[node name="body" type="CollisionShape3D" parent="." unique_id=1992055749]
 shape = SubResource("CapsuleShape3D_sfv1e")
 
-[node name="skin" type="MeshInstance3D" parent="body"]
+[node name="skin" type="MeshInstance3D" parent="body" unique_id=1301611686]
 mesh = SubResource("CapsuleMesh_sfv1e")
-skeleton = NodePath("../..")
 
-[node name="state_machine" type="Node" parent="."]
+[node name="checkers" type="Node3D" parent="body" unique_id=1333678348]
+
+[node name="slope_checker" type="RayCast3D" parent="body/checkers" unique_id=288437343 node_paths=PackedStringArray("player")]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+target_position = Vector3(0, 0, -1)
+debug_shape_custom_color = Color(1, 0, 0, 1)
+debug_shape_thickness = 4
+script = ExtResource("3_wvtmh")
+player = NodePath("../../..")
+
+[node name="ceiling_checker" type="RayCast3D" parent="body/checkers" unique_id=14792614 node_paths=PackedStringArray("player")]
+unique_name_in_owner = true
+target_position = Vector3(0, 1, 0)
+debug_shape_custom_color = Color(1, 0, 1, 1)
+debug_shape_thickness = 5
+script = ExtResource("4_a1qjk")
+player = NodePath("../../..")
+
+[node name="floor_checker" type="RayCast3D" parent="body/checkers" unique_id=1622227340 node_paths=PackedStringArray("player")]
+unique_name_in_owner = true
+debug_shape_custom_color = Color(1, 0, 1, 1)
+debug_shape_thickness = 5
+script = ExtResource("5_j3ovn")
+player = NodePath("../../..")
+
+[node name="systems" type="Node" parent="." unique_id=108887404]
+
+[node name="movement_system" type="Node" parent="systems" unique_id=87827393 node_paths=PackedStringArray("stats", "entity", "player", "state_machine")]
+unique_name_in_owner = true
+script = ExtResource("4_bectd")
+stats = NodePath("../../stats")
+entity = NodePath("../..")
+player = NodePath("../..")
+state_machine = NodePath("../../state_machine")
+
+[node name="state_machine" type="Node" parent="." unique_id=1849045959 node_paths=PackedStringArray("entity")]
+unique_name_in_owner = true
 script = ExtResource("1_symyc")
 initial_state = NodePath("idle")
+entity = NodePath("..")
 
-[node name="idle" type="Node" parent="state_machine"]
+[node name="idle" type="Node" parent="state_machine" unique_id=303291330]
 script = ExtResource("4_8fjmc")
 
-[node name="run" type="Node" parent="state_machine"]
+[node name="run" type="Node" parent="state_machine" unique_id=1986245983]
 script = ExtResource("3_fkugw")
 
-[node name="air" type="Node" parent="state_machine"]
+[node name="air" type="Node" parent="state_machine" unique_id=359546872]
 script = ExtResource("5_qiwj3")
 
-[node name="stats" type="Node" parent="."]
+[node name="stats" type="Node" parent="." unique_id=282426791]
+unique_name_in_owner = true
 script = ExtResource("7_qiwj3")
+speed = 12.0
+air_speed = 8.0
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=89215028 node_paths=PackedStringArray("player")]
+script = ExtResource("9_a1qjk")
+player = NodePath("..")
+metadata/_edit_use_anchors_ = true
+
+[node name="PlayCharInfos" type="HBoxContainer" parent="HUD" unique_id=1593939308]
+offset_left = 9.0
+offset_top = 7.0
+offset_right = 511.0
+offset_bottom = 119.0
+scale = Vector2(0.7, 0.7)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/PlayCharInfos" unique_id=101237247]
+layout_mode = 2
+
+[node name="CurrentStateLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=1322600320]
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Current state : "
+vertical_alignment = 1
+
+[node name="DesiredMoveSpeedLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=1470157578]
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Desired move speed : "
+vertical_alignment = 1
+
+[node name="VelocityLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=149988829]
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Velocity : "
+vertical_alignment = 1
+
+[node name="VelocityVectorLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=1028889670]
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Velocity vector : "
+vertical_alignment = 1
+
+[node name="IsOnFloorLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=1403884126]
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Is on floor :"
+vertical_alignment = 1
+
+[node name="CeilingCheckLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=840999387]
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Ceiling raycast colliding :"
+vertical_alignment = 1
+
+[node name="JumpBufferLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=782365543]
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Jump buffering  on :"
+vertical_alignment = 1
+
+[node name="CoyoteTimeLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=28828802]
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Coyote time :"
+vertical_alignment = 1
+
+[node name="NbJumpsInAirAllowedLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=210018754]
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Nb jumps in air allowed :"
+vertical_alignment = 1
+
+[node name="JumpCooldownLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=744400391]
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Time before can jump again :"
+vertical_alignment = 1
+
+[node name="SlideTimeLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=1131642733]
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Slide time :"
+vertical_alignment = 1
+
+[node name="SlideCooldownLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=1182423606]
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Time before can slide again :"
+vertical_alignment = 1
+
+[node name="NbDashsAllowedLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=1424709273]
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Nb dashs allowed :"
+vertical_alignment = 1
+
+[node name="DashCooldownLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=265213845]
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Time before can dash again :"
+vertical_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=1633913230]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="CameraRotationLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=642668360]
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Camera rotation :"
+vertical_alignment = 1
+
+[node name="CurrentFOVLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=1435437417]
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Current FOV :"
+vertical_alignment = 1
+
+[node name="CameraBobVerticalOffsetLabel" type="Label" parent="HUD/PlayCharInfos/VBoxContainer" unique_id=173273000]
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Camera bob vertical offset :"
+vertical_alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HUD/PlayCharInfos" unique_id=220698894]
+layout_mode = 2
+
+[node name="CurrentStateLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=1260395968]
+unique_name_in_owner = true
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="DesiredMoveSpeedLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=278959684]
+unique_name_in_owner = true
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="VelocityLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=1421780683]
+unique_name_in_owner = true
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="VelocityVectorLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=1596998540]
+unique_name_in_owner = true
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="IsOnFloorLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=1065857479]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="CeilingCheckLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=794398379]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="JumpBufferLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=1835972792]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="CoyoteTimeLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=897718385]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="NbJumpsInAirAllowedLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=1197156109]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="JumpCooldownLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=4341819]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="SlideTimeLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=1818779483]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="SlideCooldownLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=1460500823]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="NbDashsAllowedLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=224188809]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="DashCooldownLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=628414679]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=873237529]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="CameraRotationLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=888007609]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="CurrentFOVLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=1267186300]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="CameraBobVerticalOffsetLabelText" type="Label" parent="HUD/PlayCharInfos/VBoxContainer2" unique_id=13739788]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "..................."
+vertical_alignment = 1
+
+[node name="PlayCharInfos2" type="HBoxContainer" parent="HUD" unique_id=2121248935]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -233.0
+offset_top = 13.0
+offset_right = 65.0
+offset_bottom = 43.0
+grow_horizontal = 0
+scale = Vector2(0.7, 0.7)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/PlayCharInfos2" unique_id=591934662]
+layout_mode = 2
+
+[node name="FramesPerSecondLabel" type="Label" parent="HUD/PlayCharInfos2/VBoxContainer" unique_id=1145496778]
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Frames per seconds : "
+vertical_alignment = 1
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HUD/PlayCharInfos2" unique_id=138413240]
+layout_mode = 2
+
+[node name="FramesPerSecondLabelText" type="Label" parent="HUD/PlayCharInfos2/VBoxContainer2" unique_id=728864751]
+unique_name_in_owner = true
+texture_filter = 1
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "....."
+vertical_alignment = 1
+
+[node name="SpeedLinesContainer" type="ColorRect" parent="HUD" unique_id=1606496440]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_3wlsy")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="Crosshair" type="TextureRect" parent="HUD" unique_id=186936001]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2

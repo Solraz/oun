@@ -1,0 +1,89 @@
+[gd_scene load_steps=4 format=3 uid="uid://dtet508a14tfs"]
+
+[ext_resource type="Material" uid="uid://fguk7u42greu" path="res://entities/player/hands_material.tres" id="1_ihu6f"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_ihu6f"]
+radius = 0.1
+height = 0.2
+radial_segments = 24
+rings = 24
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ihu6f"]
+points = PackedVector3Array(-0.0150896, -0.0978689, 0.012424, 0.0185523, 0.0978533, 0.00631104, 0.0185583, 0.0978856, -0.00591306, -0.0978726, 0.0183742, -0.00283357, 0.0124405, -0.00917081, -0.0978011, 0.0700815, -0.012145, 0.0700815, -0.0362312, 0.0121374, 0.0912874, 0.094621, -0.0152089, -0.0272027, -0.0634679, 0.00908184, -0.0756087, -0.0179488, -0.0817169, -0.0542653, -0.0850117, -0.0517295, 0.00321263, 0.0549113, -0.0820575, -0.0149965, -0.00887415, -0.0636329, 0.0759444, -0.0604543, 0.0788582, 0.00624262, 0.0153633, 0.0727953, -0.0665147, 0.0664534, 0.063253, 0.0393557, 0.0062722, 0.0638058, 0.0761502, 0.0726096, 0.0542835, -0.0420247, -0.08461, -0.0090712, 0.0516857, 0.057737, -0.0726993, 0.0365402, 0.0487269, -0.0303364, -0.0817046, -0.0512366, 0.0726064, -0.0451529, -0.0571116, 0.0633603, 0.0514817, 0.0275606, 0.0152046, 0.094476, -0.0665286, -0.0333548, -0.0665286, 0.0944735, 0.0152042, 0.0275599, -0.0510643, -0.0633153, 0.0574709, 0.0486478, 0.0211971, -0.0846073, -0.0180582, 0.0426216, -0.0880959, 0.0882902, -0.0394684, 0.0244824, 0.0246721, -0.0305854, 0.0919561, -0.0542798, -0.0817102, -0.0179473)
+
+[node name="hands" type="Node3D"]
+
+[node name="view" type="Camera3D" parent="."]
+near = 0.001
+
+[node name="pinker" type="CSGCombiner3D" parent="."]
+transform = Transform3D(0.025, 0, 0, 0, 0.025, 0, 0, 0, 0.025, -0.06, 0.04, -0.349269)
+
+[node name="pinker_dot" type="CSGSphere3D" parent="pinker"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.259897, 0, 0)
+radius = 0.4
+radial_segments = 24
+rings = 24
+material = ExtResource("1_ihu6f")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="pinker"]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0.679679, -0.579066, 0.351167)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="pinker/CSGCombiner3D"]
+transform = Transform3D(0.760848, -0.64893, 0, 0.64893, 0.760848, 0, 0, 0, 1, 0, 0, 0)
+sides = 4
+
+[node name="pinker_dot2" type="CSGSphere3D" parent="pinker/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.481309, 0.748322, -0.334749)
+operation = 2
+radius = 0.6
+radial_segments = 64
+rings = 24
+material = ExtResource("1_ihu6f")
+
+[node name="CSGCombiner3D2" type="CSGCombiner3D" parent="pinker"]
+transform = Transform3D(-0.7, 6.11959e-08, 0, -6.11959e-08, -0.7, 0, 0, 0, 0.7, -0.189143, 0.558537, 0.29468)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="pinker/CSGCombiner3D2"]
+transform = Transform3D(-0.815118, 0.579295, 0, -0.579295, -0.815118, 0, 0, 0, 1, 0, 0, 0)
+radius = 0.4
+height = 1.2
+sides = 4
+cone = true
+
+[node name="pinker_dot2" type="CSGSphere3D" parent="pinker/CSGCombiner3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.381611, 0.516956, -0.471491)
+operation = 2
+radius = 0.6
+radial_segments = 64
+rings = 24
+material = ExtResource("1_ihu6f")
+
+[node name="Skeleton3D" type="Skeleton3D" parent="pinker"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.00125, 0, 0)
+
+[node name="PhysicalBone3D" type="PhysicalBone3D" parent="pinker/Skeleton3D"]
+transform = Transform3D(40, 0, 0, 0, 40, 0, 0, 0, 40, 0, 0, 0)
+joint_type = 3
+body_offset = Transform3D(40, 0, 0, 0, 40, 0, 0, 0, 40, 0, 0, 0)
+joint_constraints/angular_limit_enabled = false
+joint_constraints/angular_limit_upper = 90.0
+joint_constraints/angular_limit_lower = -90.0
+joint_constraints/angular_limit_bias = 0.3
+joint_constraints/angular_limit_softness = 0.9
+joint_constraints/angular_limit_relaxation = 1.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="pinker/Skeleton3D/PhysicalBone3D"]
+mesh = SubResource("SphereMesh_ihu6f")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="pinker/Skeleton3D/PhysicalBone3D"]
+shape = SubResource("ConvexPolygonShape3D_ihu6f")
+
+[node name="hand" type="CSGCombiner3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, -0.349269)
+
+[node name="hand_base" type="CSGSphere3D" parent="hand"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.53498, 0)
+radial_segments = 24
+rings = 24
+material = ExtResource("1_ihu6f")

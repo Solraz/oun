@@ -11,8 +11,8 @@ config_version=5
 [application]
 
 config/name="godot_tests"
-run/main_scene="uid://cw4im6fy17sy7"
-config/features=PackedStringArray("4.4", "Forward Plus")
+run/main_scene="uid://d3yxe768b30j7"
+config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -23,13 +23,18 @@ Functions="*res://globals/functions.gd"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/size/mode=3
 window/size/borderless=true
 window/vsync/vsync_mode=0
 
 [editor]
 
 movie_writer/disable_vsync=true
+naming/node_name_casing=2
+naming/script_name_casing=2
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_sandbox/plugin.cfg", "res://addons/terrain_tools/plugin.cfg")
 
 [input]
 
@@ -58,3 +63,15 @@ jump={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"location":0,"echo":false,"script":null)
 ]
 }
+
+[physics]
+
+2d/run_on_separate_thread=true
+3d/run_on_separate_thread=true
+common/physics_jitter_fix=0.0
+3d/physics_engine="Jolt Physics"
+common/physics_interpolation=true
+
+[rendering]
+
+occlusion_culling/use_occlusion_culling=true

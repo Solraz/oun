@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cw4im6fy17sy7"]
+[gd_scene load_steps=12 format=3 uid="uid://cw4im6fy17sy7"]
 
 [ext_resource type="PackedScene" uid="uid://dbdulgr6xkhro" path="res://entities/player/player.tscn" id="1_pvqg0"]
 
@@ -7,6 +7,8 @@
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_baglu"]
 
 [sub_resource type="Compositor" id="Compositor_t45w4"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_baglu"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pvqg0"]
 
@@ -25,19 +27,24 @@ points = PackedVector3Array(-50.7837, -50.7837, -0.793495, 50.7837, 50.7837, 0.7
 
 [node name="base" type="Node3D"]
 
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_pvqg0")
 camera_attributes = SubResource("CameraAttributesPractical_baglu")
 compositor = SubResource("Compositor_t45w4")
 
 [node name="player" parent="." instance=ExtResource("1_pvqg0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.47095, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.0694426, 0)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8.8848, 0)
 omni_range = 4096.0
 
 [node name="floor" type="StaticBody3D" parent="."]
+physics_material_override = SubResource("PhysicsMaterial_baglu")
 
 [node name="floor_mesh" type="MeshInstance3D" parent="floor"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
@@ -51,12 +58,12 @@ shape = SubResource("ConvexPolygonShape3D_pvqg0")
 [node name="objects" type="Node3D" parent="."]
 
 [node name="RigidBody3D" type="RigidBody3D" parent="objects"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.46619, -10.2501)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.560634, -3.0137)
 physics_material_override = SubResource("PhysicsMaterial_pvqg0")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="objects/RigidBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8.78917)
 mesh = SubResource("BoxMesh_pvqg0")
+skeleton = NodePath("../CollisionShape3D")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="objects/RigidBody3D"]
 shape = SubResource("BoxShape3D_pvqg0")

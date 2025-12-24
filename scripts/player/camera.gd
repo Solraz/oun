@@ -5,23 +5,32 @@ class_name PlayerCamera
 @export var head: Node3D
 @export var eyes: Node3D
 
-func _ready() -> void:
-  # Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-  pass
+#region Controls
+@export_group("Controls")
+var RETICLE : Control
+var mouse_input : Vector2 = Vector2(0,0)
+@export_range(0.001, 1, 0.001) var mouse_sensitivity : float = 0.035
+#endregion
 
-func _input(_event: InputEvent):
-  # if event is InputEventMouseMotion:
-  # 	player.rotate_y(-event.relative.x*0.0005)
-  # 	eyes.rotate_x(-event.relative.y*0.0005)
-  pass
+func _ready() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	head.rotation = player.rotation
+	pass
+
+
+func _unhandled_input(event: InputEvent):
+	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		mouse_input = event.relative
+
 
 func _process(_delta: float) -> void:
-  head.global_position.x = player.global_position.x
-  head.global_position.y = player.global_position.y + 15.0
-  head.global_position.z = player.global_position.z + 5.0
-  
-  eyes.look_at(player.global_position)
+	pass
 
 
 func _physics_process(_delta: float) -> void:
-  pass
+	head.rotation_degrees.y -= mouse_input.x * mouse_sensitivity
+	head.rotation_degrees.x -= mouse_input.y * mouse_sensitivity
+
+	head.rotation.x = clamp(head.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+
+	mouse_input = Vector2(0,0)
